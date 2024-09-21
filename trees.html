@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tree Structures | Interactive Learning</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes gradient {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .tree-node {
+            transition: all 0.3s ease;
+        }
+        .tree-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translate(0,  0px); }
+            50%  { transform: translate(0, 15px); }
+            100%   { transform: translate(0, -0px); }   
+        }
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de, 0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
+            }
+            to {
+                box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de;
+            }
+        }
+        .neon-text {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #0ff, 0 0 80px #0ff, 0 0 90px #0ff, 0 0 100px #0ff, 0 0 150px #0ff;
+        }
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        .dark-mode .bg-gray-800 {
+            background-color: #2a2a2a;
+        }
+        .dark-mode .bg-gray-900 {
+            background-color: #1a1a1a;
+        }
+        .dark-mode .text-gray-900 {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <header class="gradient-bg py-20 relative overflow-hidden">
+        <div class="container mx-auto px-4">
+            <h1 class="text-6xl font-bold mb-4 neon-text">Advanced Tree Structures</h1>
+            <p class="text-2xl mb-8">Dive deep into the world of complex data organization</p>
+            <button class="bg-white text-gray-900 px-8 py-3 rounded-full text-xl font-semibold hover:bg-gray-200 transition duration-300 glow">Start Learning</button>
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                <path class="floating" d="M0,50 Q25,30 50,50 T100,50" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+                <path class="floating" style="animation-delay: -1s;" d="M0,60 Q25,40 50,60 T100,60" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+                <path class="floating" style="animation-delay: -2s;" d="M0,40 Q25,50 50,40 T100,40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+            </svg>
+        </div>
+    </header>
+
+    <nav class="bg-gray-800 sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <ul class="flex justify-around py-4">
+                <li><a href="#avl-trees" class="hover:text-blue-400 transition duration-300">AVL Trees</a></li>
+                <li><a href="#red-black-trees" class="hover:text-red-400 transition duration-300">Red-Black Trees</a></li>
+                <li><a href="#b-trees" class="hover:text-green-400 transition duration-300">B-Trees</a></li>
+                <li><a href="#interactive-playground" class="hover:text-yellow-400 transition duration-300">Interactive Playground</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-16">
+        <section id="avl-trees" class="mb-20">
+            <h2 class="text-4xl font-bold mb-8 neon-text">AVL Trees</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg mb-4">AVL trees are self-balancing binary search trees where the height of the left and right subtrees of any node differ by at most one.</p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>Guaranteed O(log n) time complexity for operations</li>
+                        <li>Maintains balance through rotations</li>
+                        <li>Ideal for frequent lookups in large datasets</li>
+                    </ul>
+                </div>
+                <div class="tree-container relative h-64 bg-gray-800 rounded-lg overflow-hidden">
+                    <!-- SVG representation of an AVL tree will be inserted here by JavaScript -->
+                </div>
+            </div>
+            <button class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300" onclick="showAVLAnimation()">Animate Rotation</button>
+        </section>
+
+        <section id="red-black-trees" class="mb-20">
+            <h2 class="text-4xl font-bold mb-8 neon-text">Red-Black Trees</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg mb-4">Red-Black trees are another type of self-balancing binary search tree with additional properties that guarantee logarithmic height.</p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>Each node is either red or black</li>
+                        <li>The root and leaves (NIL) are black</li>
+                        <li>If a node is red, its children are black</li>
+                        <li>All paths from a node to its NIL descendants contain the same number of black nodes</li>
+                    </ul>
+                </div>
+                <div class="tree-container relative h-64 bg-gray-800 rounded-lg overflow-hidden">
+                    <!-- SVG representation of a Red-Black tree will be inserted here by JavaScript -->
+                </div>
+            </div>
+            <button class="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300" onclick="showRedBlackAnimation()">Animate Insertion</button>
+        </section>
+
+        <section id="b-trees" class="mb-20">
+            <h2 class="text-4xl font-bold mb-8 neon-text">B-Trees</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-lg mb-4">B-Trees are self-balancing tree data structures that maintain sorted data and allow searches, sequential access, insertions, and deletions in logarithmic time.</p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>Generalizes the binary search tree</li>
+                        <li>Optimized for systems that read and write large blocks of data</li>
+                        <li>Commonly used in databases and file systems</li>
+                    </ul>
+                </div>
+                <div class="tree-container relative h-64 bg-gray-800 rounded-lg overflow-hidden">
+                    <!-- SVG representation of a B-tree will be inserted here by JavaScript -->
+                </div>
+            </div>
+            <button class="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300" onclick="showBTreeAnimation()">Animate Split</button>
+        </section>
+
+        <section id="interactive-playground" class="mb-20">
+            <h2 class="text-4xl font-bold mb-8 neon-text">Interactive Playground</h2>
+            <div class="bg-gray-800 p-8 rounded-lg">
+                <div class="flex mb-4">
+                    <select id="tree-type" class="bg-gray-700 text-white p-2 rounded-l">
+                        <option value="avl">AVL Tree</option>
+                        <option value="rb">Red-Black Tree</option>
+                        <option value="b">B-Tree</option>
+                    </select>
+                    <input type="number" id="node-value" placeholder="Enter node value" class="bg-gray-700 text-white p-2 flex-grow">
+                    <button onclick="addNode()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r transition duration-300">Add Node</button>
+                </div>
+                <div id="interactive-tree" class="h-96 bg-gray-900 rounded-lg overflow-hidden">
+                    <!-- Interactive tree visualization will be rendered here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Advanced Tree Structures. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animations for section headers
+        gsap.utils.toArray('.neon-text').forEach(text => {
+            gsap.from(text, {
+                duration: 1,
+                opacity: 0,
+                y: 50,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: text,
+                    start: "top 80%",
+                }
+            });
+        });
+
+        // Tree visualization functions
+        function createTreeSVG(container, treeType) {
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", "100%");
+            svg.setAttribute("height", "100%");
+            svg.setAttribute("viewBox", "0 0 200 100");
+            container.innerHTML = '';
+            container.appendChild(svg);
+
+            switch(treeType) {
+                case 'avl':
+                    drawAVLTree(svg);
+                    break;
+                case 'rb':
+                    drawRedBlackTree(svg);
+                    break;
+                case 'b':
+                    drawBTree(svg);
+                    break;
+            }
+        }
+
+        function drawAVLTree(svg) {
+            // Example AVL tree structure
+            const nodes = [
+                {x: 100, y: 20, value: 50},
+                {x: 50, y: 50, value: 25},
+                {x: 150, y: 50, value: 75},
+                {x: 25, y: 80, value: 10},
+                {x: 75, y: 80, value: 35},
+                {x: 125, y: 80, value: 60},
+                {x: 175, y: 80, value: 90}
+            ];
+
+            // Draw edges
+            for (let i = 1; i < nodes.length; i++) {
+                const parent = nodes[Math.floor((i - 1) / 2)];
+                const child = nodes[i];
+                drawLine(svg, parent.x, parent.y, child.x, child.y);
+            }
+
+            // Draw nodes
+            nodes.forEach(node => drawNode(svg, node.x, node.y, node.value, 'avl'));
+        }
+
+        function drawRedBlackTree(svg) {
+            // Example Red-Black tree structure
+            const nodes = [
+                {x: 100, y: 20, value: 50, color: 'black'},
+                {x: 50, y: 50, value: 25, color: 'red'},
+                {x: 150, y: 50, value: 75, color: 'red'},
+                {x: 25, y: 80, value: 10, color: 'black'},
+                {x: 75, y: 80, value: 35, color: 'black'},
+                {x: 125, y: 80, value: 60, color: 'black'},
+                {x: 175, y: 80, value: 90, color: 'black'}
+            ];
+
+            // Draw edges
+            for (let i = 1; i < nodes.length; i++) {
+                const parent = nodes[Math.floor((i - 1) / 2)];
+                const child = nodes[i];
+                drawLine(svg, parent.x, parent.y, child.x, child.y);
+            }
+
+            // Draw nodes
+            nodes.forEach(node => drawNode(svg, node.x, node.y, node.value, 'rb', node.color));
+        }
+
+        function drawBTree(svg) {
+            // Example B-tree structure (simplified for visualization)
+            const nodes = [
+                {x: 100, y: 20, values: [50]},
+                {x: 50, y: 60, values: [25, 35]},
+                {x: 150, y: 60, values: [75, 85]},
+                {x: 25, y: 100, values: [10, 15, 20]},
+                {x: 75, y: 100, values: [30, 40, 45]},
+                {x: 125, y: 100, values: [60, 65, 70]},
+                {x: 175, y: 100, values: [80, 90, 95]}
+            ];
+    
+            // Draw edges
+            for (let i = 1; i < nodes.length; i++) {
+                const parent = nodes[Math.floor((i - 1) / 2)];
+                const child = nodes[i];
+                drawLine(svg, parent.x, parent.y + 10, child.x, child.y - 10);
+            }
+    
+            // Draw nodes
+            nodes.forEach(node => drawBTreeNode(svg, node.x, node.y, node.values));
+        }
+    
+        function drawLine(svg, x1, y1, x2, y2) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", y1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", y2);
+            line.setAttribute("stroke", "#4A5568");
+            line.setAttribute("stroke-width", "2");
+            svg.appendChild(line);
+        }
+    
+        function drawNode(svg, x, y, value, type, color = 'white') {
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttribute("cx", x);
+            circle.setAttribute("cy", y);
+            circle.setAttribute("r", "15");
+            circle.setAttribute("fill", color);
+            circle.setAttribute("stroke", "#4A5568");
+            circle.setAttribute("stroke-width", "2");
+    
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute("x", x);
+            text.setAttribute("y", y);
+            text.setAttribute("text-anchor", "middle");
+            text.setAttribute("dominant-baseline", "central");
+            text.setAttribute("font-size", "12");
+            text.setAttribute("fill", type === 'rb' && color === 'red' ? 'white' : 'black');
+            text.textContent = value;
+    
+            g.appendChild(circle);
+            g.appendChild(text);
+            svg.appendChild(g);
+        }
+    
+        function drawBTreeNode(svg, x, y, values) {
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            const width = values.length * 30;
+            rect.setAttribute("x", x - width / 2);
+            rect.setAttribute("y", y - 15);
+            rect.setAttribute("width", width);
+            rect.setAttribute("height", "30");
+            rect.setAttribute("fill", "white");
+            rect.setAttribute("stroke", "#4A5568");
+            rect.setAttribute("stroke-width", "2");
+            rect.setAttribute("rx", "5");
+            g.appendChild(rect);
+    
+            values.forEach((value, index) => {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", x - width / 2 + 15 + index * 30);
+                text.setAttribute("y", y);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("dominant-baseline", "central");
+                text.setAttribute("font-size", "12");
+                text.setAttribute("fill", "black");
+                text.textContent = value;
+                g.appendChild(text);
+            });
+    
+            svg.appendChild(g);
+        }
+    
+        // Animation functions
+        function showAVLAnimation() {
+            const container = document.querySelector('#avl-trees .tree-container');
+            const svg = container.querySelector('svg');
+            
+            // Clear existing content
+            svg.innerHTML = '';
+            
+            // Initial unbalanced tree
+            const initialTree = [
+                {x: 100, y: 20, value: 50},
+                {x: 50, y: 50, value: 25},
+                {x: 25, y: 80, value: 10}
+            ];
+            
+            // Draw initial tree
+            initialTree.forEach(node => drawNode(svg, node.x, node.y, node.value, 'avl'));
+            drawLine(svg, 100, 20, 50, 50);
+            drawLine(svg, 50, 50, 25, 80);
+            
+            // Animate rotation
+            setTimeout(() => {
+                gsap.to(svg.querySelectorAll('circle, text'), {
+                    duration: 1,
+                    x: (i) => i === 0 ? -50 : i === 1 ? 50 : 25,
+                    y: (i) => i === 0 ? 30 : i === 1 ? -30 : 0,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        svg.innerHTML = '';
+                        const balancedTree = [
+                            {x: 100, y: 20, value: 25},
+                            {x: 50, y: 50, value: 10},
+                            {x: 150, y: 50, value: 50}
+                        ];
+                        balancedTree.forEach(node => drawNode(svg, node.x, node.y, node.value, 'avl'));
+                        drawLine(svg, 100, 20, 50, 50);
+                        drawLine(svg, 100, 20, 150, 50);
+                    }
+                });
+            }, 1000);
+        }
+    
+        function showRedBlackAnimation() {
+            const container = document.querySelector('#red-black-trees .tree-container');
+            const svg = container.querySelector('svg');
+            
+            // Clear existing content
+            svg.innerHTML = '';
+            
+            // Initial tree
+            const initialTree = [
+                {x: 100, y: 20, value: 50, color: 'black'},
+                {x: 50, y: 50, value: 25, color: 'red'},
+                {x: 150, y: 50, value: 75, color: 'red'}
+            ];
+            
+            // Draw initial tree
+            initialTree.forEach(node => drawNode(svg, node.x, node.y, node.value, 'rb', node.color));
+            drawLine(svg, 100, 20, 50, 50);
+            drawLine(svg, 100, 20, 150, 50);
+            
+            // Animate insertion
+            setTimeout(() => {
+                const newNode = drawNode(svg, 25, 80, 10, 'rb', 'red');
+                gsap.from(newNode, {
+                    duration: 1,
+                    scale: 0,
+                    opacity: 0,
+                    ease: "elastic.out(1, 0.5)",
+                    onComplete: () => {
+                        drawLine(svg, 50, 50, 25, 80);
+                        // Color flip animation
+                        gsap.to(svg.querySelectorAll('circle'), {
+                            duration: 0.5,
+                            fill: (i) => i === 0 ? 'red' : 'black',
+                            ease: "power2.inOut"
+                        });
+                    }
+                });
+            }, 1000);
+        }
+    
+        function showBTreeAnimation() {
+            const container = document.querySelector('#b-trees .tree-container');
+            const svg = container.querySelector('svg');
+            
+            // Clear existing content
+            svg.innerHTML = '';
+            
+            // Initial B-tree node
+            const initialNode = {x: 100, y: 50, values: [30, 50]};
+            drawBTreeNode(svg, initialNode.x, initialNode.y, initialNode.values);
+            
+            // Animate split
+            setTimeout(() => {
+                gsap.to(svg.querySelector('rect'), {
+                    duration: 0.5,
+                    scaleX: 1.2,
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        svg.innerHTML = '';
+                        const splitNodes = [
+                            {x: 100, y: 20, values: [50]},
+                            {x: 50, y: 80, values: [30]},
+                            {x: 150, y: 80, values: [70]}
+                        ];
+                        splitNodes.forEach(node => drawBTreeNode(svg, node.x, node.y, node.values));
+                        drawLine(svg, 100, 30, 50, 70);
+                        drawLine(svg, 100, 30, 150, 70);
+                        
+                        gsap.from(svg.querySelectorAll('rect, text'), {
+                            duration: 0.5,
+                            scale: 0,
+                            opacity: 0,
+                            stagger: 0.1,
+                            ease: "back.out(1.7)"
+                        });
+                    }
+                });
+            }, 1000);
+        }
+    
+        // Interactive playground functions
+        let interactiveTree = [];
+    
+        function addNode() {
+            const treeType = document.getElementById('tree-type').value;
+            const nodeValue = parseInt(document.getElementById('node-value').value);
+            
+            if (isNaN(nodeValue)) {
+                alert('Please enter a valid number');
+                return;
+            }
+            
+            interactiveTree.push(nodeValue);
+            interactiveTree.sort((a, b) => a - b);
+            
+            updateInteractiveTree(treeType);
+        }
+    
+        function updateInteractiveTree(treeType) {
+            const container = document.getElementById('interactive-tree');
+            container.innerHTML = '';
+            
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", "100%");
+            svg.setAttribute("height", "100%");
+            svg.setAttribute("viewBox", "0 0 300 200");
+            container.appendChild(svg);
+            
+            switch(treeType) {
+                case 'avl':
+                    drawInteractiveAVLTree(svg);
+                    break;
+                case 'rb':
+                    drawInteractiveRedBlackTree(svg);
+                    break;
+                case 'b':
+                    drawInteractiveBTree(svg);
+                    break;
+            }
+        }
+    
+        function drawInteractiveAVLTree(svg) {
+            // Simplified AVL tree drawing (not actually balanced)
+            const nodes = interactiveTree.map((value, index) => ({
+                x: 150 + (index - (interactiveTree.length - 1) / 2) * 40,
+                y: 100,
+                value: value
+            }));
+            
+            nodes.forEach(node => drawNode(svg, node.x, node.y, node.value, 'avl'));
+        }
+    
+        function drawInteractiveRedBlackTree(svg) {
+            // Simplified Red-Black tree drawing (not actually balanced)
+            const nodes = interactiveTree.map((value, index) => ({
+                x: 150 + (index - (interactiveTree.length - 1) / 2) * 40,
+                y: 100,
+                value: value,
+                color: index % 2 === 0 ? 'red' : 'black'
+            }));
+            
+            nodes.forEach(node => drawNode(svg, node.x, node.y, node.value, 'rb', node.color));
+        }
+    
+        function drawInteractiveBTree(svg) {
+            // Simplified B-tree drawing (not actually structured correctly)
+            const nodeValues = [];
+            for (let i = 0; i < interactiveTree.length; i += 3) {
+                nodeValues.push(interactiveTree.slice(i, i + 3));
+            }
+            
+            nodeValues.forEach((values, index) => {
+                drawBTreeNode(svg, 150 + (index - (nodeValues.length - 1) / 2) * 80, 100, values);
+            });
+        }
+    
+        // Initialize tree visualizations
+        document.addEventListener('DOMContentLoaded', () => {
+            createTreeSVG(document.querySelector('#avl-trees .tree-container'), 'avl');
+            createTreeSVG(document.querySelector('#red-black-trees .tree-container'), 'rb');
+            createTreeSVG(document.querySelector('#b-trees .tree-container'), 'b');
+            
+            // Set up event listener for tree type change in interactive playground
+            document.getElementById('tree-type').addEventListener('change', (e) => {
+                updateInteractiveTree(e.target.value);
+            });
+        });
+    
+        // GSAP animations for page elements
+        gsap.from('.gradient-bg', {
+            duration: 2,
+            opacity: 0,
+            scale: 1.1,
+            ease: "power3.out"
+        });
+    
+        gsap.from('nav', {
+            duration: 1,
+            y: -50,
+            opacity: 0,
+            ease: "power2.out",
+            delay: 0.5
+        });
+    
+        gsap.utils.toArray('section').forEach(section => {
+            gsap.from(section, {
+                duration: 1,
+                opacity: 0,
+                y: 50,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%"
+                }
+            });
+        });
+    
+        // Particle animation in the header
+        const particlesContainer = document.createElement('div');
+        particlesContainer.style.position = 'absolute';
+        particlesContainer.style.top = '0';
+        particlesContainer.style.left = '0';
+        particlesContainer.style.width = '100%';
+        particlesContainer.style.height = '100%';
+        particlesContainer.style.overflow = 'hidden';
+        particlesContainer.style.pointerEvents = 'none';
+        document.querySelector('header').appendChild(particlesContainer);
+    
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '5px';
+            particle.style.height = '5px';
+            particle.style.background = 'rgba(255,255,255,0.5)';
+            particle.style.borderRadius = '50%';
+            particlesContainer.appendChild(particle);
+    
+            gsap.set(particle, {
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight
+            });
+    
+            gsap.to(particle, {
+                duration: 10 + Math.random() * 20,
+                x: '+=' + (Math.random() * 200 - 100),
+                y: '+=' + (Math.random() * 200 - 100),
+                opacity: 0,
+                repeat: -1,
+                ease: "none"
+            });
+        }
+    
+        // Optimize performance for mobile devices
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    
+        const debouncedUpdateInteractiveTree = debounce(updateInteractiveTree, 250);
+    
+        // Add touch events for mobile interactivity
+        const interactiveTreeContainer = document.getElementById('interactive-tree');
+        let touchStartX, touchStartY;
+    
+        interactiveTreeContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+    
+        interactiveTreeContainer.addEventListener('touchmove', (e) => {
+            if (!touchStartX || !touchStartY) return;
+    
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+    
+            const dx = touchEndX - touchStartX;
+            const dy = touchEndY - touchStartY;
+    
+            if (Math.abs(dx) > Math.abs(dy)) {
+                // Horizontal swipe
+                if (dx > 0) {
+                    // Swipe right: add node
+                    const randomValue = Math.floor(Math.random() * 100);
+                    interactiveTree.push(randomValue);
+                    interactiveTree.sort((a, b) => a - b);
+                } else {
+                    // Swipe left: remove last node
+                    interactiveTree.pop();
+                }
+            } else {
+                // Vertical swipe: change tree type
+                const treeTypeSelect = document.getElementById('tree-type');
+                const currentIndex = treeTypeSelect.selectedIndex;
+                if (dy > 0) {
+                    // Swipe down: next tree type
+                    treeTypeSelect.selectedIndex = (currentIndex + 1) % treeTypeSelect.options.length;
+                } else {
+                    // Swipe up: previous tree type
+                    treeTypeSelect.selectedIndex = (currentIndex - 1 + treeTypeSelect.options.length) % treeTypeSelect.options.length;
+                }
+            }
+    
+            debouncedUpdateInteractiveTree(document.getElementById('tree-type').value);
+    
+            touchStartX = null;
+            touchStartY = null;
+        });
+    
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return; // Don't interfere with input fields
+    
+            switch (e.key) {
+                case 'ArrowRight':
+                    // Add random node
+                    const randomValue = Math.floor(Math.random() * 100);
+                    interactiveTree.push(randomValue);
+                    interactiveTree.sort((a, b) => a - b);
+                    debouncedUpdateInteractiveTree(document.getElementById('tree-type').value);
+                    break;
+                case 'ArrowLeft':
+                    // Remove last node
+                    interactiveTree.pop();
+                    debouncedUpdateInteractiveTree(document.getElementById('tree-type').value);
+                    break;
+                case 'ArrowUp':
+                case 'ArrowDown':
+                    // Change tree type
+                    const treeTypeSelect = document.getElementById('tree-type');
+                    const currentIndex = treeTypeSelect.selectedIndex;
+                    treeTypeSelect.selectedIndex = e.key === 'ArrowUp'
+                        ? (currentIndex - 1 + treeTypeSelect.options.length) % treeTypeSelect.options.length
+                        : (currentIndex + 1) % treeTypeSelect.options.length;
+                    debouncedUpdateInteractiveTree(treeTypeSelect.value);
+                    break;
+            }
+        });
+    
+        // Add zoom functionality to tree visualizations
+        function addZoomPan(svgElement) {
+            let scale = 1;
+            let pointX = 0;
+            let pointY = 0;
+            let start = { x: 0, y: 0 };
+    
+            function setTransform() {
+                svgElement.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+            }
+    
+            svgElement.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                start = { x: e.clientX - pointX, y: e.clientY - pointY };
+                svgElement.addEventListener('mousemove', mouseMove);
+                svgElement.addEventListener('mouseup', mouseUp);
+            });
+    
+            function mouseMove(e) {
+                pointX = e.clientX - start.x;
+                pointY = e.clientY - start.y;
+                setTransform();
+            }
+    
+            function mouseUp() {
+                svgElement.removeEventListener('mousemove', mouseMove);
+                svgElement.removeEventListener('mouseup', mouseUp);
+            }
+    
+            svgElement.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                let xs = (e.clientX - pointX) / scale;
+                let ys = (e.clientY - pointY) / scale;
+                let delta = e.wheelDelta ? e.wheelDelta : -e.deltaY;
+                (delta > 0) ? (scale *= 1.2) : (scale /= 1.2);
+                pointX = e.clientX - xs * scale;
+                pointY = e.clientY - ys * scale;
+    
+                setTransform();
+            });
+        }
+    
+        // Apply zoom-pan to all tree visualizations
+        document.querySelectorAll('.tree-container svg').forEach(addZoomPan);
+        addZoomPan(document.querySelector('#interactive-tree svg'));
+    
+        // Add a tutorial mode
+        let tutorialStep = 0;
+        const tutorialSteps = [
+            { element: '#avl-trees', message: "AVL trees are self-balancing binary search trees. They ensure O(log n) time complexity for basic operations." },
+            { element: '#red-black-trees', message: "Red-Black trees are another type of self-balancing tree. They provide faster insertion and removal operations than AVL trees." },
+            { element: '#b-trees', message: "B-trees are self-balancing tree data structures that maintain sorted data and allow searches, sequential access, insertions, and deletions in logarithmic time." },
+            { element: '#interactive-playground', message: "Try adding nodes to different types of trees and observe how they behave!" },
+        ];
+    
+        function startTutorial() {
+            tutorialStep = 0;
+            showTutorialStep();
+        }
+    
+        function showTutorialStep() {
+            if (tutorialStep >= tutorialSteps.length) {
+                alert("Tutorial completed! Enjoy exploring advanced tree structures!");
+                return;
+            }
+    
+            const step = tutorialSteps[tutorialStep];
+            const element = document.querySelector(step.element);
+    
+            // Highlight the current element
+            element.style.boxShadow = '0 0 0 9999px rgba(0, 0, 0, 0.5)';
+            element.style.zIndex = 1000;
+    
+            // Show the message
+            const message = document.createElement('div');
+            message.textContent = step.message;
+            message.style.position = 'absolute';
+            message.style.bottom = '20px';
+            message.style.left = '50%';
+            message.style.transform = 'translateX(-50%)';
+            message.style.background = 'white';
+            message.style.color = 'black';
+            message.style.padding = '10px';
+            message.style.borderRadius = '5px';
+            message.style.zIndex = 1001;
+            document.body.appendChild(message);
+    
+            // Add next button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = tutorialStep === tutorialSteps.length - 1 ? 'Finish' : 'Next';
+            nextButton.style.marginLeft = '10px';
+            nextButton.addEventListener('click', () => {
+                element.style.boxShadow = '';
+                element.style.zIndex = '';
+                document.body.removeChild(message);
+                tutorialStep++;
+                showTutorialStep();
+            });
+            message.appendChild(nextButton);
+        }
+    
+        // Add tutorial button
+        const tutorialButton = document.createElement('button');
+        tutorialButton.textContent = 'Start Tutorial';
+        tutorialButton.style.position = 'fixed';
+        tutorialButton.style.bottom = '20px';
+        tutorialButton.style.right = '20px';
+        tutorialButton.style.zIndex = 1000;
+        tutorialButton.addEventListener('click', startTutorial);
+        document.body.appendChild(tutorialButton);
+    
+        // Add a dark mode toggle
+        function createDarkModeToggle() {
+            const toggle = document.createElement('button');
+            toggle.textContent = '🌓';
+            toggle.style.position = 'fixed';
+            toggle.style.top = '20px';
+            toggle.style.right = '20px';
+            toggle.style.zIndex = 1000;
+            toggle.style.background = 'none';
+            toggle.style.border = 'none';
+            toggle.style.fontSize = '24px';
+            toggle.style.cursor = 'pointer';
+    
+            toggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            });
+    
+            document.body.appendChild(toggle);
+    
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+    
+        createDarkModeToggle();
+    
+        // Add dark mode styles
+        const darkModeStyles = `
+            .dark-mode {
+                background-color: #1a1a1a;
+                color: #ffffff;
+            }
+            .dark-mode .bg-gray-800 {
+                background-color: #2a2a2a;
+            }
+            .dark-mode .bg-gray-900 {
+                background-color: #1a1a1a;
+            }
+            .dark-mode .text-gray-900 {
+                color: #ffffff;
+            }
+        `;
+    
+        const styleElement = document.createElement('style');
+        styleElement.textContent = darkModeStyles;
+        document.head.appendChild(styleElement);
+    
+        // Performance monitoring
+        let lastFrameTime = performance.now();
+        let frameCount = 0;
+        const fpsElement = document.createElement('div');
+        fpsElement.style.position = 'fixed';
+        fpsElement.style.top = '10px';
+        fpsElement.style.left = '10px';
+        fpsElement.style.zIndex = 1000;
+        document.body.appendChild(fpsElement);
+    
+        function updateFPS() {
+            const now = performance.now();
+            const delta = now - lastFrameTime;
+            frameCount++;
+    
+            if (delta >= 1000) {
+                const fps = Math.round((frameCount * 1000) / delta);
+                fpsElement.textContent = `FPS: ${fps}`;
+                frameCount = 0;
+                lastFrameTime = now;
+            }
+    
+            requestAnimationFrame(updateFPS);
+        }
+    
+        updateFPS();
+    
+        // Lazy loading images
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('img[data-src]');
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+    
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, options);
+    
+            images.forEach(img => imageObserver.observe(img));
+        }
+    
+        lazyLoadImages();
+    
+        // Add a simple code editor for users to experiment
+        function createCodeEditor() {
+            const editorContainer = document.createElement('div');
+            editorContainer.style.position = 'fixed';
+            editorContainer.style.bottom = '20px';
+            editorContainer.style.left = '20px';
+            editorContainer.style.zIndex = 1000;
+            editorContainer.style.background = '#f0f0f0';
+            editorContainer.style.padding = '10px';
+            editorContainer.style.borderRadius = '5px';
+    
+            const textarea = document.createElement('textarea');
+            textarea.style.width = '300px';
+            textarea.style.height = '150px';
+            textarea.style.marginBottom = '10px';
+            textarea.value = '// Write your tree-related code here\n';
+    
+            const runButton = document.createElement('button');
+            runButton.textContent = 'Run Code';
+            runButton.addEventListener('click', () => {
+                try {
+                    eval(textarea.value);
+                } catch (error) {
+                    console.error('Code execution error:', error);
+                    alert('Error executing code. Check the console for details.');
+                }
+            });
+    
+            editorContainer.appendChild(textarea);
+            editorContainer.appendChild(runButton);
+            document.body.appendChild(editorContainer);
+        }
+    
+        createCodeEditor();
+    
+    </script>
+    </body>
+    </html>
